@@ -12,3 +12,5 @@ class Consulta(SQLModel, table=True):
     data_hora: datetime
 
     status: str = Field(default="agendada")
+
+    audit_token: str

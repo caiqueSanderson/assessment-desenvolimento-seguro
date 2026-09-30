@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}
+Agenda de Consultas
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .agenda-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px 20px;
+    }
+
+    .agenda-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .agenda-title h2 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .agenda-title p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 15px;
+    }
+
+    .agenda-counter {
+        background: #f3f4f6;
+        border-radius: 12px;
+        padding: 12px 18px;
+        text-align: center;
+        min-width: 100px;
+    }
+
+    .agenda-counter strong {
+        display: block;
+        font-size: 22px;
+        color: #111827;
+    }
+
+    .agenda-counter span {
+        font-size: 12px;
+        color: #6b7280;
+    }
+
+    .table-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .agenda-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+    }
+
+    .agenda-table thead {
+        background: #f9fafb;
+    }
+
+    .agenda-table th {
+        padding: 15px 20px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #6b7280;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .agenda-table td {
+        padding: 18px 20px;
+        font-size: 14px;
+        color: #374151;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .agenda-table tbody tr {
+        transition: background-color 0.15s ease;
+    }
+
+    .agenda-table tbody tr:hover {
+        background: #f9fafb;
+    }
+
+    .agenda-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .patient {
+        font-weight: 600;
+        color: #111827;
+    }
+
+    .professional {
+        color: #4b5563;
+    }
+
+    .date {
+        color: #4b5563;
+        white-space: nowrap;
+    }
+
+    .status {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 11px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .status::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+        margin-right: 7px;
+    }
+
+    .empty-state {
+        padding: 50px 20px;
+        text-align: center;
+        color: #6b7280;
+    }
+
+    .empty-state strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #374151;
+        font-size: 16px;
+    }
+
+    @media (max-width: 700px) {
+        .agenda-container {
+            padding: 24px 14px;
+        }
+
+        .agenda-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .agenda-title h2 {
+            font-size: 24px;
+        }
+
+        .agenda-counter {
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+        }
+    }
+</style>
+
+<div class="agenda-container">
+
+<div class="agenda-header">
+    <div class="agenda-title">
+        <h2>Agenda de Consultas</h2>
+        <p>Visualize os atendimentos agendados.</p>
+    </div>
+
+    <div class="agenda-counter">
+        <strong>{{ consultas|length }}</strong>
+        <span>consultas</span>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-wrapper">
+
+        {% if consultas %}
+
+        <table class="agenda-table">
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Profissional</th>
+                    <th>Data e horário</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for consulta in consultas %}
+                <tr>
+                    <td>
+                        <span class="patient">
+                            {{ consulta.paciente_id }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="professional">
+                            {{ consulta.profissional_id }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="date">
+                            {{ consulta.data_hora }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="status">
+                            {{ consulta.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+
+        <div class="empty-state">
+            <strong>Nenhuma consulta encontrada</strong>
+            <span>Não existem consultas cadastradas no momento.</span>
+        </div>
+
+        {% endif %}
+
+    </div>
+</div>
+
+</div>
+
+{% endblock %}

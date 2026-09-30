@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
+import secrets
+
 from database.database import get_session
 from models.consulta import Consulta
 from models.schemas import (
@@ -25,7 +27,10 @@ def criar_consulta(
     consulta: ConsultaCreate,
     session: Session = Depends(get_session),
 ):
-    nova_consulta = Consulta.model_validate(consulta)
+    nova_consulta = Consulta(
+        **consulta.model_dump(),
+        audit_token=secrets.token_urlsafe(16)
+    )
 
     session.add(nova_consulta)
     session.commit()
