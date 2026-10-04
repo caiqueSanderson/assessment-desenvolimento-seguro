@@ -1,15 +1,16 @@
 from datetime import datetime
+from typing_extensions import Literal
 
 from pydantic import BaseModel, ConfigDict
 
 
-class ConsultaCreate(BaseModel):
+class CreateAppointment(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     paciente_id: int
     profissional_id: int
     data_hora: datetime
-    status: str = "agendada"
+    status: Literal["agendada", "concluida", "cancelada"] = "agendada"
 
 
 class ConsultaUpdate(BaseModel):
@@ -18,7 +19,7 @@ class ConsultaUpdate(BaseModel):
     paciente_id: int | None = None
     profissional_id: int | None = None
     data_hora: datetime | None = None
-    status: str | None = None
+    status: Literal["agendada", "concluida", "cancelada"] | None = None
 
 
 class ConsultaResponse(BaseModel):
@@ -28,4 +29,4 @@ class ConsultaResponse(BaseModel):
     paciente_id: int
     profissional_id: int
     data_hora: datetime
-    status: str
+    status: Literal["agendada", "concluida", "cancelada"]
