@@ -1238,3 +1238,71 @@ def test_login_rate_limit():
         responses.append(response.status_code)
 
     assert 429 in responses
+
+def test_profissional_nao_pode_visualizar_consulta_de_outro():
+    profissional_a = criar_usuario(
+            email="profissional.a@clinica.com",
+            role="profissional",
+    )
+
+    profissional_b = criar_usuario(
+        email="profissional.b@clinica.com",
+        role="profissional",
+    )
+
+    consulta = criar_consulta(
+        profissional_id=profissional_b.id
+    )
+
+    token = obter_token(profissional_a)
+
+    response = client.get(
+        f"/consultas/{consulta.id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 403
+
+def test_profissional_nao_pode_transferir_consulta():
+    profissional_a = criar_usuario(
+        email="profissional.a@clinica.com",
+        role="profissional"
+    )
+
+    profissional_b = criar_usuario(
+        email="profissional.b@clinica.com",
+        role="profissional"
+    )
+
+    consulta = criar_consulta(
+        profissional_id=profissional_a.id
+    )
+
+    token = obter_token(profissional_a)
+
+    response = client.put(
+        f"/consultas/{consulta.id}",
+        json={
+            "profissional_id": profissional_b.id
+        },
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 403
+    
+
+def test_usuario_nao_admin_nao_acessa_rota_admin():
+    profissional = criar_usuario(
+            email="profissional.b@clinica.com",
+            role="profissional"
+    )
+
+    token = obter_token(profissional)
+
+    response = client.get(
+        "/consultas/admin-only",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 403
+
