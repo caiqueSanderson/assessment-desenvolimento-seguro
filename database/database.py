@@ -2,11 +2,10 @@ from collections.abc import Generator
 
 from sqlmodel import Session, SQLModel, create_engine
 
-
-DATABASE_URL = "sqlite:///./clinica.db"
+from config import settings
 
 engine = create_engine(
-    DATABASE_URL,
+    settings.database_url,
     echo=False,
     connect_args={"check_same_thread": False},
 )
