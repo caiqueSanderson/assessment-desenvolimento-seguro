@@ -1,5 +1,3 @@
-import os
-
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 
@@ -8,13 +6,11 @@ from auth.jwt_handler import (
     verify_access_token,
 )
 
+from config import settings
 
 CLIENTS = {
     "laboratorio_01": {
-        "client_secret": os.getenv(
-            "LAB_CLIENT_SECRET",
-            "development-laboratorio-secret",
-        ),
+        "client_secret": settings.LAB_CLIENT_SECRET,
         "client_type": "m2m",
         "scopes": [
             "laboratorio:read",

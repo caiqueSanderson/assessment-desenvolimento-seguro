@@ -1,3 +1,5 @@
+from typing import Literal
+
 from fastapi import APIRouter, Depends, Form, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from slowapi import Limiter
@@ -78,6 +80,7 @@ def generate_user_token(
 )
 def signup(
     user_data: UserCreate,
+    current_user: User = Depends(RoleChecker(["administrador"])),
     session: Session = Depends(get_session),
 ):
 
@@ -157,6 +160,9 @@ def swagger_token(
 
 @router.post("/token")
 def token(
+    grant_type: Literal["client_credentials"] = Form(
+        default="client_credentials"
+    ),
     client_id: str = Form(...),
     client_secret: str = Form(...),
 ):
@@ -166,11 +172,13 @@ def token(
         client_secret,
     )
 
+    access_token = create_m2m_token(
+        client_id,
+        client,
+    )
+
     return {
-        "access_token": create_m2m_token(
-            client_id,
-            client,
-        ),
+        "access_token": access_token,
         "token_type": "bearer",
         "scope": " ".join(client["scopes"]),
     }

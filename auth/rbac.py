@@ -7,7 +7,7 @@ from models.user import User
 
 
 class RoleChecker:
-    def __init__(self, allowed_roles: list[str]):
+    def __init__(self, allowed_roles: list[str] | str):
         self.allowed_roles = allowed_roles
 
     def __call__(
@@ -16,7 +16,14 @@ class RoleChecker:
         session: Session = Depends(get_session),
     ) -> User:
 
-        user_id = int(payload["sub"])
+        try:
+            user_id = int(payload["sub"])
+
+        except (ValueError, TypeError):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token inválido",
+            )
 
         user = session.exec(
             select(User).where(User.id == user_id)

@@ -5,7 +5,7 @@ from sqlmodel import Session, SQLModel, create_engine
 from config import settings
 
 engine = create_engine(
-    settings.database_url,
+    settings.DATABASE_URL,
     echo=False,
     connect_args={"check_same_thread": False},
 )
